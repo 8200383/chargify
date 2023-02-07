@@ -1,4 +1,4 @@
-package com.aimproxy.chargify.features.bookmarks
+package com.aimproxy.chargify.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues

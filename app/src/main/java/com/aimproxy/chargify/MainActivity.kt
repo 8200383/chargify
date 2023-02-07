@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -21,10 +22,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aimproxy.chargify.designsystem.ChargifyTheme
-import com.aimproxy.chargify.features.bookmarks.BookmarksScreen
-import com.aimproxy.chargify.features.chargers.ChargersScreen
-import com.aimproxy.chargify.features.stations.EvStationsScreen
-import com.aimproxy.chargify.features.timeline.TimelineScreen
+import com.aimproxy.chargify.screens.BookmarksScreen
+import com.aimproxy.chargify.screens.EvChargersScreen
+import com.aimproxy.chargify.screens.EvStationsScreen
+import com.aimproxy.chargify.screens.TimelineScreen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,6 +41,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
 
                     Scaffold(
+                        topBar = { ChargifyTopBar(navController) },
                         bottomBar = { ChargifyNavigationBar(navController) }
                     ) { innerPadding ->
                         ChargifyNavigationHost(navController, innerPadding)
@@ -48,6 +50,18 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ChargifyTopBar(navController: NavHostController) {
+    TopAppBar(title = {
+        Text(
+            text = "Chargify",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.ExtraBold
+        )
+    })
 }
 
 @Composable
@@ -60,9 +74,9 @@ fun ChargifyNavigationHost(
         startDestination = Screens.EvStations.route,
         Modifier.padding(innerPadding)
     ) {
-        composable(Screens.EvStations.route) { EvStationsScreen(navHostController) }
+        composable(Screens.EvStations.route) { EvStationsScreen(navHostController, innerPadding) }
         composable(Screens.Bookmarks.route) { BookmarksScreen(navHostController, innerPadding) }
-        composable(Screens.Chargers.route) { ChargersScreen(navHostController) }
+        composable(Screens.Chargers.route) { EvChargersScreen(navHostController) }
         composable(Screens.Timeline.route) { TimelineScreen(navHostController) }
     }
 }

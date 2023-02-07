@@ -1,10 +1,10 @@
-package com.aimproxy.chargify.features.chargers
+package com.aimproxy.chargify.screens
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 
 @Composable
-fun ChargersScreen(navHostController: NavHostController) {
+fun EvChargersScreen(navHostController: NavHostController) {
     Text(text = "This is the Chargers")
 }
