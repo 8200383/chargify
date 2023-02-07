@@ -1,5 +1,6 @@
 package com.aimproxy.chargify
 
+import android.R.attr.maxLines
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,9 +12,10 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -22,14 +24,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aimproxy.chargify.designsystem.ChargifyTheme
+import com.aimproxy.chargify.designsystem.Typography
 import com.aimproxy.chargify.features.bookmarks.BookmarksScreen
 import com.aimproxy.chargify.features.chargers.ChargersScreen
 import com.aimproxy.chargify.features.stations.EvStationsScreen
 import com.aimproxy.chargify.features.timeline.TimelineScreen
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -62,10 +65,9 @@ fun ChargifyNavigationHost(
         Modifier.padding(innerPadding)
     ) {
         composable(Screens.EvStations.route) { EvStationsScreen(navHostController) }
-        composable(Screens.Bookmarks.route) { BookmarksScreen(navHostController) }
+        composable(Screens.Bookmarks.route) { BookmarksScreen(navHostController, innerPadding) }
         composable(Screens.Chargers.route) { ChargersScreen(navHostController) }
         composable(Screens.Timeline.route) { TimelineScreen(navHostController) }
-
     }
 }
 
@@ -83,10 +85,7 @@ fun ChargifyNavigationBar(navController: NavHostController) {
                 label = {
                     Text(
                         text = screen.label,
-                        fontWeight = when {
-                            selected -> FontWeight.ExtraBold
-                            else -> FontWeight.Bold
-                        }
+                        fontWeight = FontWeight.ExtraBold
                     )
                 },
                 selected = selected,
