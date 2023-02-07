@@ -22,18 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".features.chargers.ChargersScreen"
-            android:label="Chargers" />
-        <activity
-            android:name=".features.stations.StationsActivity"
-            android:label="Timeline" />
-        <activity
-            android:name=".features.bookmarks.BookmarksActivity"
-            android:label="Timeline" />
-        <activity
-            android:name=".features.timeline.TimelineActivity"
-            android:label="Timeline" />
     </application>
 
 </manifest>
