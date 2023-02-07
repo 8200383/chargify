@@ -1,5 +1,8 @@
 package com.aimproxy.chargify
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -26,12 +29,20 @@ import com.aimproxy.chargify.screens.BookmarksScreen
 import com.aimproxy.chargify.screens.EvChargersScreen
 import com.aimproxy.chargify.screens.EvStationsScreen
 import com.aimproxy.chargify.screens.TimelineScreen
-
+import com.aimproxy.chargify.services.ChargifyLocationService
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
+    private val locationServiceIntent by lazy {
+        Intent(this, ChargifyLocationService::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        ensureChargifyPermissions()
+        startService(locationServiceIntent)
+
         setContent {
             ChargifyTheme {
                 Surface(
@@ -50,6 +61,17 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private fun ensureChargifyPermissions() {
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 0)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(locationServiceIntent)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,8 +80,8 @@ fun ChargifyTopBar(navController: NavHostController) {
     TopAppBar(title = {
         Text(
             text = "Chargify",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.ExtraBold
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
         )
     })
 }
@@ -72,7 +94,7 @@ fun ChargifyNavigationHost(
     NavHost(
         navController = navHostController,
         startDestination = Screens.EvStations.route,
-        Modifier.padding(innerPadding)
+        modifier = Modifier.padding(innerPadding)
     ) {
         composable(Screens.EvStations.route) { EvStationsScreen(navHostController, innerPadding) }
         composable(Screens.Bookmarks.route) { BookmarksScreen(navHostController, innerPadding) }
