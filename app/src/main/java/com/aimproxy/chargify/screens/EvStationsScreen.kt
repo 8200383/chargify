@@ -3,16 +3,19 @@ package com.aimproxy.chargify.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.MyLocation
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.aimproxy.chargify.components.EvStationItem
 import com.aimproxy.chargify.datastore.evStationsList
@@ -26,6 +29,15 @@ fun EvStationsScreen(
     val lazyListState = rememberLazyListState()
 
     Scaffold(
+        topBar = {
+            TopAppBar(title = {
+                Text(
+                    text = "Ev Stations Near By",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            })
+        },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { /* do something */ },
