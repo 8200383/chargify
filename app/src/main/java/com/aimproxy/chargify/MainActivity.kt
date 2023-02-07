@@ -1,6 +1,5 @@
 package com.aimproxy.chargify
 
-import android.R.attr.maxLines
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,8 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.TextUnit
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -24,7 +21,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aimproxy.chargify.designsystem.ChargifyTheme
-import com.aimproxy.chargify.designsystem.Typography
 import com.aimproxy.chargify.features.bookmarks.BookmarksScreen
 import com.aimproxy.chargify.features.chargers.ChargersScreen
 import com.aimproxy.chargify.features.stations.EvStationsScreen
