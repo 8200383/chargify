@@ -6,9 +6,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Power
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aimproxy.chargify.services.EvStation
@@ -23,19 +25,34 @@ fun EvStationItem(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        evStation.OperatorInfo?.Title?.let { station ->
+        evStation.OperatorInfo?.Title?.let { stationOperator ->
             ListItem(
-               /*leadingContent = {
-                    Icon(
-                        Icons.Outlined.EvStation,
-                        contentDescription = null,
-                    )
-                }, */
+                /*leadingContent = {
+                     Icon(
+                         Icons.Outlined.EvStation,
+                         contentDescription = null,
+                     )
+                 }, */
                 headlineText = {
-                    Text(
-                        text = station,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stationOperator,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(end = 4.dp)
+                        )
+                        evStation.UsageCost?.let { cost ->
+                            Text(
+                                text = "$cost/kW",
+                                fontSize = 12.sp,
+                                overflow = TextOverflow.Ellipsis,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
                 },
                 trailingContent = {
                     IconButton(
