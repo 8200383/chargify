@@ -1,13 +1,9 @@
 package com.aimproxy.chargify.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Egg
-import androidx.compose.material.icons.outlined.EggAlt
-import androidx.compose.material.icons.outlined.EvStation
+import androidx.compose.material.icons.outlined.Power
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -46,7 +42,7 @@ fun EvStationItem(
                         onClick = { /* doSomething() */ },
                         colors = IconButtonDefaults.outlinedIconButtonColors(),
                     ) {
-                        Icon(Icons.Outlined.Egg, contentDescription = null)
+                        Icon(Icons.Outlined.Power, contentDescription = null)
                     }
                 },
                 supportingText = {
