@@ -11,14 +11,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MyLocation
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.aimproxy.chargify.components.EvStationItem
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import com.aimproxy.chargify.services.EvStation
 import com.aimproxy.chargify.services.OpenChargeMapService
 import com.aimproxy.chargify.services.SearchEvStationsNearbyInput
@@ -34,6 +34,8 @@ fun EvStationsScreen(
     // OpenChargeMap
     val openChargeMapService = OpenChargeMapService()
     val evStationsList = remember { mutableStateListOf<EvStation>() }
+
+    // Location Lookup
 
     fun fetchEvStations() {
         openChargeMapService.lookupEvStations(

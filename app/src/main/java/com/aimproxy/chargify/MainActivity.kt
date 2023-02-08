@@ -1,9 +1,12 @@
 package com.aimproxy.chargify
 
-import android.Manifest
-import android.content.Intent
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Looper
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,19 +31,30 @@ import com.aimproxy.chargify.screens.BookmarksScreen
 import com.aimproxy.chargify.screens.EvChargersScreen
 import com.aimproxy.chargify.screens.EvStationsScreen
 import com.aimproxy.chargify.screens.TimelineScreen
-import com.aimproxy.chargify.services.ChargifyLocationService
+import com.google.android.gms.location.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
-    private val locationServiceIntent by lazy {
-        Intent(this, ChargifyLocationService::class.java)
+    private var listeningToUpdates = false
+
+    private val locationCallback: LocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            Log.d("Location", locationResult.locations.toString())
+        }
     }
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ensureChargifyPermissions()
-        startService(locationServiceIntent)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        if (checkSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(ACCESS_FINE_LOCATION), 0)
+        }
+
+        startUpdatingLocation()
 
         setContent {
             ChargifyTheme {
@@ -61,15 +75,40 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun ensureChargifyPermissions() {
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 0)
+    @SuppressLint("MissingPermission")
+    private fun startUpdatingLocation() {
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000)
+            .setWaitForAccurateLocation(false)
+            .setMinUpdateIntervalMillis(2000)
+            .build()
+
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        ).addOnSuccessListener {
+            listeningToUpdates = true
+        }.addOnFailureListener { e ->
+            Log.d("Location", "Unable to get location", e)
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        stopService(locationServiceIntent)
+    override fun onStop() {
+        super.onStop()
+        if (listeningToUpdates) {
+            fusedLocationClient.removeLocationUpdates(locationCallback)
+        }
+    }
+
+    @SuppressLint("MissingSuperCall")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            recreate()
+        }
     }
 }
 
