@@ -14,13 +14,10 @@ data class EvStation(
     @SerializedName("OperatorInfo") var OperatorInfo: OperatorInfo? = null,
     @SerializedName("UsageType") var UsageType: UsageType? = null,
     @SerializedName("StatusType") var StatusType: StatusType? = null,
-    @SerializedName("IsRecentlyVerified") var IsRecentlyVerified: Boolean,
-    @SerializedName("DateLastVerified") var DateLastVerified: String,
-    @SerializedName("ID") var ID: Int,
     @SerializedName("UsageCost") var UsageCost: String? = null,
     @SerializedName("AddressInfo") var AddressInfo: AddressInfo? = null,
     @SerializedName("Connections") var Connections: ArrayList<Connections>? = null,
-    @SerializedName("NumberOfPoints") var NumberOfPoints: Int,
+    @SerializedName("NumberOfPoints") var NumberOfPoints: Int? = null,
     @SerializedName("DateLastStatusUpdate") var DateLastStatusUpdate: String
 )
 
