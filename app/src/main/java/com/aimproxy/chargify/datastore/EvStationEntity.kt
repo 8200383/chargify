@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Relation
 
 @Entity(tableName = "ev_stations")
-data class EvStation(
+data class EvStationEntity(
     @PrimaryKey(autoGenerate = false) val stationId: Int,
 
     val phonePrimaryContact: String? = null,
@@ -28,6 +28,6 @@ data class EvStation(
         parentColumn = "stationId",
         entityColumn = "parentEvStationId"
     )
-    val connections: List<EvStationConnection>
+    val connections: List<ConnectionEntity>
 
 )

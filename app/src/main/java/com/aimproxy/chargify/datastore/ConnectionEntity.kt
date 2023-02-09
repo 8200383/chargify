@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class EvStationConnection(
+data class ConnectionEntity(
     @PrimaryKey(autoGenerate = false) val connectionId: Int,
     val parentEvStationId: Int,
 

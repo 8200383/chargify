@@ -6,11 +6,11 @@ import androidx.room.*
 interface EvStationDAO {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addEvStation(evStation: EvStation)
+    suspend fun addEvStation(evStation: EvStationEntity)
 
     @Query("SELECT * FROM ev_stations")
-    fun getAllEvStations(): List<EvStation>
+    fun getAllEvStations(): List<EvStationEntity>
 
     @Update
-    suspend fun updateEvStation(evStation: EvStation)
+    suspend fun updateEvStation(evStation: EvStationEntity)
 }

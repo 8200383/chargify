@@ -3,10 +3,6 @@ package com.aimproxy.chargify
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
-import android.location.Geocoder.GeocodeListener
-import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
@@ -40,7 +36,6 @@ import com.aimproxy.chargify.screens.TimelineScreen
 import com.aimproxy.chargify.viewmodels.LocationViewModel
 import com.google.android.gms.location.*
 import java.util.*
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
