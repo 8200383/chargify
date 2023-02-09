@@ -51,7 +51,7 @@ fun EvStationItem(
                                         else -> "$badgeNumber Miles" // 1 for Miles
                                     },
                                     fontSize = 10.sp,
-                                    fontWeight = FontWeight.SemiBold,
+                                    fontWeight = FontWeight.Bold,
                                 )
                             }
                         }
@@ -117,31 +117,6 @@ fun EvStationItem(
                                     )
                                 }
                             }
-                        }
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        TextButton(
-                            onClick = { /* Do something! */ },
-                            contentPadding = PaddingValues(end = 4.dp),
-                        ) {
-                            Text(
-                                text = "Save",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                        TextButton(
-                            onClick = { /* Do something! */ },
-                        ) {
-                            Text(
-                                text = "Rate",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
                         }
                     }
                 }
