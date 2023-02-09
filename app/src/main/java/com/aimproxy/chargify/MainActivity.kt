@@ -3,12 +3,18 @@ package com.aimproxy.chargify
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.location.Geocoder.GeocodeListener
+import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -44,13 +50,13 @@ class MainActivity : ComponentActivity() {
     private var listeningToUpdates = false
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         override fun onLocationResult(locationResult: LocationResult) {
             val location = locationResult.locations.first()
             locationViewModel.updateLocation(location)
-            Log.d("Location", locationResult.locations.toString())
+            Log.d("Location#Callback", location.toString())
         }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

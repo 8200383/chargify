@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aimproxy.chargify.services.EvStation
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,12 +28,6 @@ fun EvStationItem(
     ) {
         evStation.OperatorInfo?.Title?.let { stationOperator ->
             ListItem(
-                /*leadingContent = {
-                     Icon(
-                         Icons.Outlined.EvStation,
-                         contentDescription = null,
-                     )
-                 }, */
                 headlineText = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -43,14 +38,20 @@ fun EvStationItem(
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(end = 4.dp)
                         )
-                        evStation.UsageCost?.let { cost ->
-                            Text(
-                                text = "$cost/kW",
-                                fontSize = 12.sp,
-                                overflow = TextOverflow.Ellipsis,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
+                        evStation.AddressInfo?.Distance?.let { distance ->
+                            evStation.AddressInfo?.DistanceUnit?.let { unit ->
+                                val shortDistance = distance.roundToInt()
+                                Text(
+                                    text = when (unit) {
+                                        2 -> "$shortDistance Km" // 2 for Km
+                                        else -> "$shortDistance Miles" // 1 for Miles
+                                    },
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.padding(end = 4.dp)
+                                )
+                            }
                         }
                     }
                 },
@@ -66,14 +67,23 @@ fun EvStationItem(
                     Column(
                         modifier = Modifier.fillMaxWidth()
                     ) {
+                        evStation.AddressInfo?.Title?.let { town ->
+                            Text(
+                                text = town,
+                                fontSize = 12.sp,
+                                overflow = TextOverflow.Ellipsis,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.outline,
+                            )
+                        }
                         evStation.Connections?.forEach { connection ->
                             Row(
                                 modifier = Modifier.padding(vertical = 2.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                connection.ConnectionType?.FormalName?.let { c ->
+                                connection.ConnectionType?.FormalName?.let { conn ->
                                     Text(
-                                        text = c,
+                                        text = conn,
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight.SemiBold,
                                         modifier = Modifier.padding(end = 4.dp)

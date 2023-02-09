@@ -18,7 +18,7 @@ data class EvStation(
     @SerializedName("DateLastVerified") var DateLastVerified: String,
     @SerializedName("ID") var ID: Int,
     @SerializedName("UsageCost") var UsageCost: String? = null,
-    @SerializedName("AddressInfo") var AddressInfo: AddressInfo = AddressInfo(),
+    @SerializedName("AddressInfo") var AddressInfo: AddressInfo? = null,
     @SerializedName("Connections") var Connections: ArrayList<Connections>? = null,
     @SerializedName("NumberOfPoints") var NumberOfPoints: Int,
     @SerializedName("DateLastStatusUpdate") var DateLastStatusUpdate: String

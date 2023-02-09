@@ -37,18 +37,15 @@ fun EvStationsScreen(
     val evStationsList = remember { mutableStateListOf<EvStation>() }
 
     // Location Lookup
-    //val locationViewModel: LocationViewModel by viewModel()
-    //val currentLocation = locationViewModel.location
     val currentLocation by locationViewModel.location.observeAsState()
-    //val locationViewModel = viewModel<LocationViewModel>()
 
     fun fetchEvStations() {
         openChargeMapService.lookupEvStations(
             SearchEvStationsNearbyInput(
                 maxResults = 25,
-                countryCode = "us",
-                latitude = 37.7749,
-                longitude = -122.4194
+                countryCode = "pt",
+                latitude = currentLocation?.latitude ?: Double.MIN_VALUE,
+                longitude = currentLocation?.longitude ?: Double.MIN_VALUE
             )
         ) { data, error ->
             Log.d("EvStations", data.toString())
@@ -61,10 +58,9 @@ fun EvStationsScreen(
 
     Scaffold(
         topBar = {
-
             TopAppBar(title = {
                 Text(
-                    text = "Ev Stations Nearby ${currentLocation?.latitude}",
+                    text = "Ev Stations Nearby",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
