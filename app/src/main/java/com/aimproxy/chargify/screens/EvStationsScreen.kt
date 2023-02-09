@@ -10,9 +10,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.MyLocation
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,12 +21,14 @@ import com.aimproxy.chargify.components.EvStationItem
 import com.aimproxy.chargify.services.EvStation
 import com.aimproxy.chargify.services.OpenChargeMapService
 import com.aimproxy.chargify.services.SearchEvStationsNearbyInput
+import com.aimproxy.chargify.viewmodels.LocationViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EvStationsScreen(
     navController: NavHostController,
     innerPadding: PaddingValues,
+    locationViewModel: LocationViewModel
 ) {
     val lazyListState = rememberLazyListState()
 
@@ -36,6 +37,10 @@ fun EvStationsScreen(
     val evStationsList = remember { mutableStateListOf<EvStation>() }
 
     // Location Lookup
+    //val locationViewModel: LocationViewModel by viewModel()
+    //val currentLocation = locationViewModel.location
+    val currentLocation by locationViewModel.location.observeAsState()
+    //val locationViewModel = viewModel<LocationViewModel>()
 
     fun fetchEvStations() {
         openChargeMapService.lookupEvStations(
@@ -56,9 +61,10 @@ fun EvStationsScreen(
 
     Scaffold(
         topBar = {
+
             TopAppBar(title = {
                 Text(
-                    text = "Ev Stations Nearby",
+                    text = "Ev Stations Nearby ${currentLocation?.latitude}",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )

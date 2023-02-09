@@ -1,6 +1,5 @@
 package com.aimproxy.chargify
 
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
@@ -9,6 +8,7 @@ import android.os.Looper
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -31,28 +31,31 @@ import com.aimproxy.chargify.screens.BookmarksScreen
 import com.aimproxy.chargify.screens.EvChargersScreen
 import com.aimproxy.chargify.screens.EvStationsScreen
 import com.aimproxy.chargify.screens.TimelineScreen
+import com.aimproxy.chargify.viewmodels.LocationViewModel
 import com.google.android.gms.location.*
+import java.util.*
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
+    private val locationViewModel: LocationViewModel by viewModels()
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var listeningToUpdates = false
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
+            val location = locationResult.locations.first()
+            locationViewModel.updateLocation(location)
             Log.d("Location", locationResult.locations.toString())
         }
     }
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        if (checkSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(ACCESS_FINE_LOCATION), 0)
-        }
 
         startUpdatingLocation()
 
@@ -65,13 +68,19 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
 
                     Scaffold(
-                        //topBar = { ChargifyTopBar(navController) },
                         bottomBar = { ChargifyNavigationBar(navController) }
                     ) { innerPadding ->
-                        ChargifyNavigationHost(navController, innerPadding)
+                        ChargifyNavigationHost(navController, innerPadding, locationViewModel)
                     }
                 }
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (checkSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(ACCESS_FINE_LOCATION), 0)
         }
     }
 
@@ -116,13 +125,14 @@ class MainActivity : ComponentActivity() {
 fun ChargifyNavigationHost(
     navHostController: NavHostController,
     innerPadding: PaddingValues,
+    locationViewModel: LocationViewModel
 ) {
     NavHost(
         navController = navHostController,
         startDestination = Screens.EvStations.route,
         modifier = Modifier.padding(innerPadding)
     ) {
-        composable(Screens.EvStations.route) { EvStationsScreen(navHostController, innerPadding) }
+        composable(Screens.EvStations.route) { EvStationsScreen(navHostController, innerPadding, locationViewModel) }
         composable(Screens.Bookmarks.route) { BookmarksScreen(navHostController, innerPadding) }
         composable(Screens.Chargers.route) { EvChargersScreen(navHostController) }
         composable(Screens.Timeline.route) { TimelineScreen(navHostController) }
