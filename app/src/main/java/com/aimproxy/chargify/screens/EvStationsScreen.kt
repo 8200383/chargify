@@ -13,7 +13,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.aimproxy.chargify.components.EvStationItem
 import com.aimproxy.chargify.services.SearchEvStationsNearbyInput
 import com.aimproxy.chargify.viewmodels.EvStationsViewModel
@@ -31,15 +30,6 @@ fun EvStationsScreen(
     val currentLocation by locationViewModel.location.observeAsState()
 
     Scaffold(
-        topBar = {
-            TopAppBar(title = {
-                Text(
-                    text = "Ev Stations Nearby",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            })
-        },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {

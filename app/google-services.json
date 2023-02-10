@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "394362384071",
+    "project_id": "chargify-534f9",
+    "storage_bucket": "chargify-534f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394362384071:android:1852f4adec41676252d8e2",
+        "android_client_info": {
+          "package_name": "com.aimproxy.chargify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "394362384071-s8ua89nte0tfqak7hsio6297rogc5bec.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvx2pFtSVSJ92QdbuixV05CcJZkfGTbJc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "394362384071-ffm09158s3ej69g4p5mancuq5hjht19n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

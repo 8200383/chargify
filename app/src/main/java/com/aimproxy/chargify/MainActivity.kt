@@ -2,6 +2,8 @@ package com.aimproxy.chargify
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -20,7 +22,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -37,12 +41,19 @@ import com.aimproxy.chargify.screens.TimelineScreen
 import com.aimproxy.chargify.viewmodels.EvStationsViewModel
 import com.aimproxy.chargify.viewmodels.LocationViewModel
 import com.google.android.gms.location.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
-    private val locationViewModel: LocationViewModel by viewModels()
 
+    // Firebase
+    private lateinit var firebaseAuth: FirebaseAuth
+
+    // Location
+    private val locationViewModel: LocationViewModel by viewModels()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var listeningToUpdates = false
 
@@ -58,9 +69,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Location
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
         startUpdatingLocation()
+
+        // Firebase Auth
+        firebaseAuth = Firebase.auth
 
         setContent {
             ChargifyTheme {
@@ -72,6 +86,7 @@ class MainActivity : ComponentActivity() {
                     val evStationsViewModel: EvStationsViewModel = viewModel()
 
                     Scaffold(
+                        topBar = { ChargifyTopBar(navController, firebaseAuth) },
                         bottomBar = { ChargifyNavigationBar(navController) }
                     ) { innerPadding ->
                         ChargifyNavigationHost(
@@ -93,6 +108,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        if (listeningToUpdates) {
+            fusedLocationClient.removeLocationUpdates(locationCallback)
+        }
+    }
+
     @SuppressLint("MissingPermission")
     private fun startUpdatingLocation() {
         val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000)
@@ -111,13 +133,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (listeningToUpdates) {
-            fusedLocationClient.removeLocationUpdates(locationCallback)
-        }
-    }
-
     @SuppressLint("MissingSuperCall")
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -128,6 +143,43 @@ class MainActivity : ComponentActivity() {
             recreate()
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ChargifyTopBar(
+    navController: NavHostController,
+    firebaseAuth: FirebaseAuth
+) {
+    // NavController#findTitle
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val topBarLabel = Screens.values().firstOrNull { screen ->
+        currentDestination?.hierarchy?.any { it.route == screen.route } == true
+    }?.topBarLabel
+
+    // GoogleSignInActivity
+    val context = LocalContext.current
+    val activity = (LocalContext.current as? Activity)
+    val intent = Intent(context, GoogleSignInActivity::class.java)
+
+    TopAppBar(
+        title = {
+            Text(
+                text = topBarLabel ?: "Chargify",
+                fontWeight = FontWeight.ExtraBold
+            )
+        },
+        actions = {
+            IconButton(onClick = {
+                firebaseAuth.signOut()
+                startActivity(context, intent, null)
+                activity?.finish()
+            }) {
+                Icon(Icons.Outlined.DoorBack, contentDescription = "Sign Out")
+            }
+        }
+    )
 }
 
 @Composable
@@ -164,10 +216,15 @@ fun ChargifyNavigationBar(navController: NavHostController) {
             val selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true
 
             NavigationBarItem(
-                icon = { Icon(imageVector = screen.icon, contentDescription = screen.label) },
+                icon = {
+                    Icon(
+                        imageVector = screen.icon,
+                        contentDescription = screen.navigationLabel
+                    )
+                },
                 label = {
                     Text(
-                        text = screen.label,
+                        text = screen.navigationLabel,
                         fontWeight = FontWeight.ExtraBold
                     )
                 },
@@ -186,9 +243,14 @@ fun ChargifyNavigationBar(navController: NavHostController) {
     }
 }
 
-enum class Screens(val route: String, val icon: ImageVector, val label: String) {
-    EvStations("ev_stations", Icons.Outlined.EvStation, "Ev Stations"),
-    Bookmarks("bookmarks", Icons.Outlined.BookmarkBorder, "Bookmarks"),
-    Chargers("chargers", Icons.Outlined.Power, "Chargers"),
-    Timeline("timeline", Icons.Outlined.Timeline, "Timeline"),
+enum class Screens(
+    val route: String,
+    val icon: ImageVector,
+    val navigationLabel: String,
+    val topBarLabel: String
+) {
+    EvStations("ev_stations", Icons.Outlined.EvStation, "Ev Stations", "Ev Stations Nearby"),
+    Bookmarks("bookmarks", Icons.Outlined.BookmarkBorder, "Bookmarks", "Saved Stations"),
+    Chargers("chargers", Icons.Outlined.Power, "Chargers", "Compatible Chargers"),
+    Timeline("timeline", Icons.Outlined.Timeline, "Timeline", "Timeline"),
 }
