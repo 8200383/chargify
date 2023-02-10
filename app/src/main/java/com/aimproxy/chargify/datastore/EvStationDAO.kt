@@ -1,15 +1,19 @@
 package com.aimproxy.chargify.datastore
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
 interface EvStationDAO {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addAllEvStations(evStations: List<EvStationEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addEvStation(evStation: EvStationEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addAllConnections(connections: List<ConnectionEntity>)
 
+    @Transaction
     @Query("SELECT * FROM ev_stations")
-    fun getAllEvStations(): List<EvStationEntity>
+    fun getAllEvStations(): LiveData<List<EvStationWithConnectionsList>>
 
     @Update
     suspend fun updateEvStation(evStation: EvStationEntity)

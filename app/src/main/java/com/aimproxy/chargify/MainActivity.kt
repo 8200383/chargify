@@ -21,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -33,6 +34,7 @@ import com.aimproxy.chargify.screens.BookmarksScreen
 import com.aimproxy.chargify.screens.EvChargersScreen
 import com.aimproxy.chargify.screens.EvStationsScreen
 import com.aimproxy.chargify.screens.TimelineScreen
+import com.aimproxy.chargify.viewmodels.EvStationsViewModel
 import com.aimproxy.chargify.viewmodels.LocationViewModel
 import com.google.android.gms.location.*
 import java.util.*
@@ -67,11 +69,17 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
+                    val evStationsViewModel: EvStationsViewModel = viewModel()
 
                     Scaffold(
                         bottomBar = { ChargifyNavigationBar(navController) }
                     ) { innerPadding ->
-                        ChargifyNavigationHost(navController, innerPadding, locationViewModel)
+                        ChargifyNavigationHost(
+                            navController,
+                            innerPadding,
+                            evStationsViewModel,
+                            locationViewModel
+                        )
                     }
                 }
             }
@@ -126,6 +134,7 @@ class MainActivity : ComponentActivity() {
 fun ChargifyNavigationHost(
     navHostController: NavHostController,
     innerPadding: PaddingValues,
+    evStationsViewModel: EvStationsViewModel,
     locationViewModel: LocationViewModel
 ) {
     NavHost(
@@ -133,7 +142,12 @@ fun ChargifyNavigationHost(
         startDestination = Screens.EvStations.route,
         modifier = Modifier.padding(innerPadding)
     ) {
-        composable(Screens.EvStations.route) { EvStationsScreen(navHostController, innerPadding, locationViewModel) }
+        composable(Screens.EvStations.route) {
+            EvStationsScreen(
+                evStationsViewModel,
+                locationViewModel
+            )
+        }
         composable(Screens.Bookmarks.route) { BookmarksScreen(navHostController, innerPadding) }
         composable(Screens.Chargers.route) { EvChargersScreen(navHostController) }
         composable(Screens.Timeline.route) { TimelineScreen(navHostController) }

@@ -5,7 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [(EvStationEntity::class)], version = 1, exportSchema = false)
+@Database(
+    entities = [EvStationEntity::class, ConnectionEntity::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class EvStationRoomDatabase : RoomDatabase() {
     abstract fun evStationDAO(): EvStationDAO
 

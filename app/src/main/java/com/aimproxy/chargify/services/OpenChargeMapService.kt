@@ -11,6 +11,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 data class EvStation(
+    @SerializedName("ID") var ID: Int? = null,
     @SerializedName("OperatorInfo") var OperatorInfo: OperatorInfo? = null,
     @SerializedName("StatusType") var StatusType: StatusType? = null,
     @SerializedName("UsageCost") var UsageCost: String? = null,
@@ -44,11 +45,12 @@ data class ConnectionType(
 )
 
 data class Connections(
-    @SerializedName("ConnectionType") var ConnectionType: ConnectionType? = ConnectionType(),
-    @SerializedName("StatusType") var StatusType: StatusType? = StatusType(),
+    @SerializedName("ID") var ID: Int? = null,
+    @SerializedName("ConnectionType") var ConnectionType: ConnectionType? = null,
+    @SerializedName("StatusType") var StatusType: StatusType? = null,
     @SerializedName("Amps") var Amps: Int? = null,
     @SerializedName("Voltage") var Voltage: Int? = null,
-    @SerializedName("PowerKW") var PowerKW: Double? = null,
+    @SerializedName("PowerKW") var PowerKw: Double? = null,
     @SerializedName("Quantity") var Quantity: Int? = null
 )
 
@@ -73,12 +75,15 @@ private const val OPEN_CHARGE_MAP_API = "https://api.openchargemap.io/v3/"
 private const val OPEN_CHARGE_MAP_API_KEY = "6babce48-0973-49af-937b-3f3a1c76ae30"
 
 class OpenChargeMapService {
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(OPEN_CHARGE_MAP_API)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    companion object {
+        private val retrofit = Retrofit.Builder()
+            .baseUrl(OPEN_CHARGE_MAP_API)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-    private val service: OpenChargeMapRequests = retrofit.create(OpenChargeMapRequests::class.java)
+        private val service: OpenChargeMapRequests =
+            retrofit.create(OpenChargeMapRequests::class.java)
+    }
 
     fun lookupEvStations(
         input: SearchEvStationsNearbyInput,

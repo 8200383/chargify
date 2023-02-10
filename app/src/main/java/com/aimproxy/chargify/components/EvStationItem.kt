@@ -13,13 +13,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aimproxy.chargify.services.EvStation
+import com.aimproxy.chargify.datastore.EvStationWithConnectionsList
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EvStationItem(
-    evStation: EvStation,
+    evStationItem: EvStationWithConnectionsList,
 ) {
     val dark = isSystemInDarkTheme()
 
@@ -32,15 +32,15 @@ fun EvStationItem(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    evStation.OperatorInfo?.Title?.let { stationOperator ->
+                    evStationItem.evStation.operatorInfo?.let { operatorInfo ->
                         Text(
-                            text = stationOperator,
+                            text = operatorInfo,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(end = 4.dp)
                         )
                     }
-                    evStation.AddressInfo?.Distance?.let { distance ->
-                        evStation.AddressInfo?.DistanceUnit?.let { unit ->
+                    evStationItem.evStation.distance?.let { distance ->
+                        evStationItem.evStation.distanceUnit?.let { unit ->
                             Badge(
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             ) {
@@ -66,9 +66,9 @@ fun EvStationItem(
                 }
             },
             overlineText = {
-                evStation.AddressInfo?.Title?.let { town ->
+                evStationItem.evStation.addressInfo?.let { addressInfo ->
                     Text(
-                        text = town,
+                        text = addressInfo,
                         fontSize = 12.sp,
                         overflow = TextOverflow.Ellipsis,
                         fontWeight = FontWeight.SemiBold,
@@ -80,19 +80,19 @@ fun EvStationItem(
                 Column(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    evStation.Connections?.forEach { connection ->
+                    evStationItem.connections?.forEach { connection ->
                         Row(
                             modifier = Modifier.padding(vertical = 2.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            connection.ConnectionType?.FormalName?.let { conn ->
+                            connection.formalName?.let { conn ->
                                 Text(
                                     text = conn,
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     modifier = Modifier.padding(end = 4.dp)
                                 )
-                                connection.PowerKW?.let { kw ->
+                                connection.powerKw?.let { kw ->
                                     Text(
                                         text = "$kw kW",
                                         fontSize = 12.sp,
@@ -104,7 +104,7 @@ fun EvStationItem(
                                         modifier = Modifier.padding(end = 4.dp)
                                     )
                                 }
-                                connection.Amps?.let { amps ->
+                                connection.amps?.let { amps ->
                                     Text(
                                         text = "$amps A",
                                         fontSize = 12.sp,
