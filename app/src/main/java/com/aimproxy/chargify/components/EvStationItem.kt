@@ -1,8 +1,8 @@
 package com.aimproxy.chargify.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,10 +23,8 @@ fun EvStationItem(
 ) {
     val dark = isSystemInDarkTheme()
 
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
         ListItem(
+            modifier = Modifier.clickable {},
             headlineText = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -56,13 +54,6 @@ fun EvStationItem(
                             }
                         }
                     }
-                }
-            },
-            trailingContent = {
-                FilledTonalIconButton(
-                    onClick = { },
-                ) {
-                    Icon(Icons.Outlined.NearMe, contentDescription = null)
                 }
             },
             overlineText = {
@@ -122,11 +113,4 @@ fun EvStationItem(
                 }
             }
         )
-        Divider(
-            color = when {
-                dark -> Color.DarkGray
-                else -> Color.LightGray
-            }
-        )
-    }
 }
