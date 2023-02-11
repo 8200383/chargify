@@ -14,7 +14,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aimproxy.chargify.datastore.EvStationWithConnectionsList
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +41,7 @@ fun EvStationItem(
                             Badge(
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             ) {
-                                val badgeNumber = distance.roundToInt()
+                                val badgeNumber = String.format("%.2f", distance)
                                 Text(
                                     text = when (unit) {
                                         2 -> "$badgeNumber Km" // 2 for Km

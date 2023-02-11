@@ -12,7 +12,7 @@ interface EvStationDAO {
     suspend fun addAllConnections(connections: List<ConnectionEntity>)
 
     @Transaction
-    @Query("SELECT * FROM ev_stations")
+    @Query("SELECT * FROM ev_stations ORDER BY distance ASC")
     fun getAllEvStations(): LiveData<List<EvStationWithConnectionsList>>
 
     @Update
