@@ -32,7 +32,11 @@ data class StatusType(
 
 data class AddressInfo(
     @SerializedName("Title") var Title: String? = null,
+    @SerializedName("AddressLine1") var AddressLine1: String? = null,
+    @SerializedName("AddressLine2") var AddressLine2: String? = null,
     @SerializedName("Town") var Town: String? = null,
+    @SerializedName("StateOrProvince") var StateOrProvince: String? = null,
+    @SerializedName("Postcode") var Postcode: String? = null,
     @SerializedName("Latitude") var Latitude: Double? = null,
     @SerializedName("Longitude") var Longitude: Double? = null,
     @SerializedName("Distance") var Distance: Double? = null,

@@ -55,6 +55,7 @@ fun EvStationsScreen(
     }
 }
 
+
 @Composable
 fun EvStationsScreenActions(
     evStationsViewModel: EvStationsViewModel,
@@ -88,12 +89,14 @@ fun EvStationsScreenActions(
                 }
             }
         }
-        currentEvStation.value?.addressInfo?.let { addr ->
+        currentEvStation.value?.let { evStation ->
             SmallFloatingActionButton(
                 onClick = {
-                    share.type = "text/plain"
-                    share.putExtra(Intent.EXTRA_TEXT, addr)
-                    startActivity(context, Intent.createChooser(share, addr), null);
+                    share.apply {
+                        putExtra(Intent.EXTRA_TEXT, evStation.toString())
+                        type = "text/plain"
+                    }
+                    startActivity(context, Intent.createChooser(share, evStation.toString()), null);
                 },
             ) {
                 Icon(Icons.Outlined.Share, "Share")

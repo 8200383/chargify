@@ -1,5 +1,6 @@
 package com.aimproxy.chargify.datastore
 
+import android.net.Uri
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -29,14 +30,26 @@ data class EvStationEntity(
     val usageCost: String? = null,
 
     val addressInfo: String? = null,
+    val addressLine1: String? = null,
+    val addressLine2: String? = null,
     val town: String? = null,
+    val stateOrProvince: String? = null,
+    val postcode: String? = null,
+
     val latitude: Double? = null,
     val longitude: Double? = null,
     val distance: Double? = null,
     val distanceUnit: Int? = null,
 
     val numberOfPoints: Int? = null,
-)
+) {
+    override fun toString(): String {
+        return "${operatorInfo ?: ""}\n" +
+                "${addressLine1 ?: ""}\n" +
+                "${addressLine2 ?: ""}\n" +
+                Uri.parse("https://www.google.com/maps/place/${latitude},${longitude}")
+    }
+}
 
 @Entity
 data class ConnectionEntity(
