@@ -3,6 +3,7 @@ package com.aimproxy.chargify.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aimproxy.chargify.datastore.*
 import com.aimproxy.chargify.services.OpenChargeMapService
@@ -23,6 +24,16 @@ class EvStationsViewModel(
 
     val evStationsList: LiveData<List<EvStationWithConnectionsList>> =
         evStationRepository.getAllEvStations();
+
+    private val _selectedEvStation = MutableLiveData<EvStationEntity>()
+    val selectedEvStation: LiveData<EvStationEntity>
+        get() = _selectedEvStation
+
+    fun setCurrentSelectedEvStation(stationId: Int) {
+        evStationRepository.getEvStation(stationId).observeForever { evStation ->
+            _selectedEvStation.value = evStation
+        }
+    }
 
     fun fetchAndSaveEvStations(
         params: SearchEvStationsNearbyInput,

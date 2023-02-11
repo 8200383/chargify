@@ -15,6 +15,10 @@ interface EvStationDAO {
     @Query("SELECT * FROM ev_stations ORDER BY distance ASC")
     fun getAllEvStations(): LiveData<List<EvStationWithConnectionsList>>
 
+    @Transaction
+    @Query("SELECT * FROM ev_stations WHERE stationId = :stationId")
+    fun getEvStation(stationId: Int): LiveData<EvStationEntity>
+
     @Update
     suspend fun updateEvStation(evStation: EvStationEntity)
 }

@@ -17,6 +17,10 @@ class EvStationRepository(
         return evStationDAO.getAllEvStations()
     }
 
+    fun getEvStation(evStationId: Int): LiveData<EvStationEntity> {
+        return evStationDAO.getEvStation(evStationId)
+    }
+
     suspend fun updateEvStation(evStation: EvStationEntity) {
         return evStationDAO.updateEvStation(evStation)
     }
