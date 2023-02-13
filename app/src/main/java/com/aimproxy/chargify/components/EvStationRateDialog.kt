@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.EvStation
@@ -6,7 +7,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import com.aimproxy.chargify.firestore.RatingsAggregation
 import com.aimproxy.chargify.viewmodels.EvStationsViewModel
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlin.math.roundToInt
 
 @Composable
@@ -16,6 +20,8 @@ fun EvStationRateDialog(
 ) {
     val currentEvStation = evStationsViewModel.selectedEvStation.observeAsState()
     var sliderPosition by remember { mutableStateOf(0f) }
+
+    val ratingsService = RatingsAggregation(Firebase.firestore)
 
     AlertDialog(
         onDismissRequest = { openDialog.value = false },
@@ -32,7 +38,6 @@ fun EvStationRateDialog(
                 Text(
                     text = "Power up your ride and spread the joy of electric driving by rating your favorite EV charging stations!",
                     fontWeight = FontWeight.SemiBold,
-
                     textAlign = TextAlign.Center
                 )
                 Text(
@@ -53,12 +58,28 @@ fun EvStationRateDialog(
             }
         },
         confirmButton = {
-            TextButton(
-                onClick = {
-                    openDialog.value = false
+            currentEvStation.value?.stationId?.let {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                        ratingsService.addRating(it, sliderPosition)
+                            .addOnSuccessListener {
+                                Log.d(
+                                    "Rate",
+                                    "DocumentSnapshot successfully written!"
+                                )
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w(
+                                    "Rate",
+                                    "Error writing document",
+                                    e
+                                )
+                            }
+                    }
+                ) {
+                    Text(text = "Give my rate!", fontWeight = FontWeight.SemiBold)
                 }
-            ) {
-                Text(text = "Give my rate!", fontWeight = FontWeight.SemiBold)
             }
         },
     )

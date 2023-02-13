@@ -1,7 +1,7 @@
 package com.aimproxy.chargify.firestore
 
 import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.SetOptions
@@ -9,26 +9,28 @@ import com.google.firebase.firestore.ktx.toObject
 
 class RatingsAggregation(private val db: FirebaseFirestore) {
 
-    data class EvStation(
-        internal var stationId: Int = 0,
+    data class EvStationRating(
+        @DocumentId internal var stationId: Int = 0,
         internal var avgRating: Double = 0.0,
         internal var numRatings: Int = 0
     )
 
-    fun getRatings(stationIds: Array<Int>): Task<QuerySnapshot> {
-        val stationRef = db.collection("ratings")
-        return stationRef
+    fun getRatingsByIds(stationIds: List<Int>): Task<QuerySnapshot> {
+        return db.collection("ratings")
             .whereIn("stationId", stationIds.toList())
             .get()
     }
 
-    private fun addRating(evStationRef: DocumentReference, rating: Float): Task<Void> {
-        // Create reference for new rating, for use inside the transaction
-        val ratingRef = evStationRef.collection("ratings").document()
+    fun addRating(evStationId: Int, rating: Float): Task<Void> {
+        val evStationRef = db.collection("ratings").document(evStationId.toString())
 
-        // In a transaction, add the new rating and update the aggregate totals
         return db.runTransaction { transaction ->
-            val evStation = transaction.get(evStationRef).toObject<EvStation>()!!
+
+            // In a transaction, add the new rating and update the aggregate totals
+            var evStation = transaction.get(evStationRef).toObject<EvStationRating>()
+            if (evStation == null) {
+                evStation = EvStationRating(evStationId, 0.0, 0)
+            }
 
             // Compute new number of ratings
             val newNumRatings = evStation.numRatings + 1
@@ -41,16 +43,14 @@ class RatingsAggregation(private val db: FirebaseFirestore) {
             evStation.numRatings = newNumRatings
             evStation.avgRating = newAvgRating
 
-            // Update restaurant
-            transaction.set(evStationRef, evStation)
+            transaction.set(evStationRef, evStation, SetOptions.merge())
 
-            // Update rating
-            val data = hashMapOf<String, Any>(
-                "rating" to rating
-            )
-            transaction.set(ratingRef, data, SetOptions.merge())
-
+            // Success
             null
         }
+    }
+
+    companion object {
+        private val TAG = "RatingsAggregation"
     }
 }
