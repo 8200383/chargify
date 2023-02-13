@@ -40,6 +40,7 @@ import com.aimproxy.chargify.screens.EvStationsScreen
 import com.aimproxy.chargify.screens.TimelineScreen
 import com.aimproxy.chargify.viewmodels.EvStationsViewModel
 import com.aimproxy.chargify.viewmodels.LocationViewModel
+import com.aimproxy.chargify.viewmodels.UsersViewModel
 import com.google.android.gms.location.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -84,6 +85,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val evStationsViewModel: EvStationsViewModel = viewModel()
+                    val usersViewModel: UsersViewModel = viewModel()
 
                     Scaffold(
                         topBar = { ChargifyTopBar(navController, firebaseAuth) },
@@ -92,6 +94,7 @@ class MainActivity : ComponentActivity() {
                         ChargifyNavigationHost(
                             navController,
                             innerPadding,
+                            usersViewModel,
                             evStationsViewModel,
                             locationViewModel
                         )
@@ -186,6 +189,7 @@ fun ChargifyTopBar(
 fun ChargifyNavigationHost(
     navHostController: NavHostController,
     innerPadding: PaddingValues,
+    usersViewModel: UsersViewModel,
     evStationsViewModel: EvStationsViewModel,
     locationViewModel: LocationViewModel
 ) {
@@ -196,6 +200,7 @@ fun ChargifyNavigationHost(
     ) {
         composable(Screens.EvStations.route) {
             EvStationsScreen(
+                usersViewModel,
                 evStationsViewModel,
                 locationViewModel
             )

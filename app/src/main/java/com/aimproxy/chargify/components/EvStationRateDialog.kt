@@ -1,3 +1,5 @@
+package com.aimproxy.chargify.components
+
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column

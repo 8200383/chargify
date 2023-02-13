@@ -1,6 +1,5 @@
 package com.aimproxy.chargify.screens
 
-import EvStationRateDialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,13 +11,16 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.aimproxy.chargify.components.EvStationItem
+import com.aimproxy.chargify.components.EvStationRateDialog
 import com.aimproxy.chargify.components.EvStationsScreenActions
 import com.aimproxy.chargify.viewmodels.EvStationsViewModel
 import com.aimproxy.chargify.viewmodels.LocationViewModel
+import com.aimproxy.chargify.viewmodels.UsersViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EvStationsScreen(
+    usersViewModel: UsersViewModel,
     evStationsViewModel: EvStationsViewModel,
     locationViewModel: LocationViewModel
 ) {
@@ -30,6 +32,7 @@ fun EvStationsScreen(
     Scaffold(
         floatingActionButton = {
             EvStationsScreenActions(
+                usersViewModel,
                 evStationsViewModel,
                 locationViewModel,
                 onClickStarRate = { openRateDialog.value = true }

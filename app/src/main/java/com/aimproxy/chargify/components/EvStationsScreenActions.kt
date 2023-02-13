@@ -19,10 +19,11 @@ import androidx.core.content.ContextCompat
 import com.aimproxy.chargify.services.SearchEvStationsNearbyInput
 import com.aimproxy.chargify.viewmodels.EvStationsViewModel
 import com.aimproxy.chargify.viewmodels.LocationViewModel
-
+import com.aimproxy.chargify.viewmodels.UsersViewModel
 
 @Composable
 fun EvStationsScreenActions(
+    usersViewModel: UsersViewModel,
     evStationsViewModel: EvStationsViewModel,
     locationViewModel: LocationViewModel,
     onClickStarRate: () -> Unit
@@ -37,7 +38,7 @@ fun EvStationsScreenActions(
 
     // Google Maps
     val maps = Intent(Intent.ACTION_VIEW)
-    maps.setPackage("com.google.android.apps.maps");
+    maps.setPackage("com.google.android.apps.maps")
 
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -48,7 +49,7 @@ fun EvStationsScreenActions(
                 SmallFloatingActionButton(
                     onClick = {
                         maps.data = Uri.parse("geo:0,0?q=$latitude,$longitude")
-                        ContextCompat.startActivity(context, maps, null);
+                        ContextCompat.startActivity(context, maps, null)
                     },
                 ) {
                     Icon(Icons.Outlined.NearMe, "Go")
@@ -66,7 +67,7 @@ fun EvStationsScreenActions(
                         context,
                         Intent.createChooser(share, evStation.toString()),
                         null
-                    );
+                    )
                 },
             ) {
                 Icon(Icons.Outlined.Share, "Share")
@@ -75,8 +76,8 @@ fun EvStationsScreenActions(
         currentEvStation.value?.phonePrimaryContact?.let { phone ->
             SmallFloatingActionButton(
                 onClick = {
-                    dialer.data = Uri.parse("tel:${phone}");
-                    ContextCompat.startActivity(context, dialer, null);
+                    dialer.data = Uri.parse("tel:${phone}")
+                    ContextCompat.startActivity(context, dialer, null)
                 },
             ) {
                 Icon(Icons.Outlined.Call, "Call")
@@ -88,6 +89,16 @@ fun EvStationsScreenActions(
                 onClick = { onClickStarRate() },
             ) {
                 Icon(Icons.Outlined.StarBorder, "Rate")
+            }
+        }
+
+        currentEvStation.value?.let { station ->
+            SmallFloatingActionButton(
+                onClick = {
+                    usersViewModel.bookmarkEvStation(station.stationId)
+                },
+            ) {
+                Icon(Icons.Outlined.BookmarkBorder, "Bookmark")
             }
         }
 
