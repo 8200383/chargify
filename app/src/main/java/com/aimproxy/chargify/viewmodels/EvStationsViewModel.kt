@@ -23,7 +23,7 @@ class EvStationsViewModel(
     }
 
     val evStationsList: LiveData<List<EvStationWithConnectionsList>> =
-        evStationRepository.getAllEvStations();
+        evStationRepository.getAllEvStations()
 
     private val _selectedEvStation = MutableLiveData<EvStationEntity>()
     val selectedEvStation: LiveData<EvStationEntity>

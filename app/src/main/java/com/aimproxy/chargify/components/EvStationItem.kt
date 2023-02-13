@@ -20,6 +20,7 @@ import com.aimproxy.chargify.datastore.EvStationWithConnectionsList
 @Composable
 fun EvStationItem(
     evStationItem: EvStationWithConnectionsList,
+    isSelected: Boolean = false,
     onClick: (stationId: Int) -> Unit
 ) {
     val dark = isSystemInDarkTheme()
@@ -58,10 +59,17 @@ fun EvStationItem(
             }
         },
         leadingContent = {
-            Icon(
-                Icons.Outlined.EvStation,
-                contentDescription = "Nearby EvStation",
-            )
+            FilledTonalIconButton(onClick = {
+                onClick(evStationItem.evStation.stationId)
+            }) {
+                Icon(
+                    when {
+                        isSelected -> Icons.Outlined.Done
+                        else -> Icons.Outlined.EvStation
+                    },
+                    contentDescription = "Nearby EvStation",
+                )
+            }
         },
         overlineText = {
             evStationItem.evStation.addressInfo?.let { addressInfo ->

@@ -25,6 +25,7 @@ fun EvStationsScreen(
 ) {
     val lazyListState = rememberLazyListState()
     val evStationsList by evStationsViewModel.evStationsList.observeAsState(listOf())
+    val selectedEvStation = evStationsViewModel.selectedEvStation.observeAsState()
 
     val openRateDialog = remember { mutableStateOf(false) }
 
@@ -43,9 +44,11 @@ fun EvStationsScreen(
             contentPadding = innerPadding,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(evStationsList) { evStation ->
+            items(evStationsList) { station ->
+                val selected = selectedEvStation.value?.stationId
                 EvStationItem(
-                    evStationItem = evStation,
+                    evStationItem = station,
+                    isSelected = selected?.equals(station.evStation.stationId) ?: false,
                     onClick = { evStationsViewModel.setCurrentSelectedEvStation(it) }
                 )
             }
