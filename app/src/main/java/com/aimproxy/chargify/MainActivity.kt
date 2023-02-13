@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.content.ContextCompat.startActivity
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -38,9 +37,7 @@ import com.aimproxy.chargify.screens.BookmarksScreen
 import com.aimproxy.chargify.screens.EvChargersScreen
 import com.aimproxy.chargify.screens.EvStationsScreen
 import com.aimproxy.chargify.screens.TimelineScreen
-import com.aimproxy.chargify.viewmodels.EvStationsViewModel
 import com.aimproxy.chargify.viewmodels.LocationViewModel
-import com.aimproxy.chargify.viewmodels.UsersViewModel
 import com.google.android.gms.location.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -84,8 +81,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    val evStationsViewModel: EvStationsViewModel = viewModel()
-                    val usersViewModel: UsersViewModel = viewModel()
 
                     Scaffold(
                         topBar = { ChargifyTopBar(navController, firebaseAuth) },
@@ -94,8 +89,6 @@ class MainActivity : ComponentActivity() {
                         ChargifyNavigationHost(
                             navController,
                             innerPadding,
-                            usersViewModel,
-                            evStationsViewModel,
                             locationViewModel
                         )
                     }
@@ -189,8 +182,6 @@ fun ChargifyTopBar(
 fun ChargifyNavigationHost(
     navHostController: NavHostController,
     innerPadding: PaddingValues,
-    usersViewModel: UsersViewModel,
-    evStationsViewModel: EvStationsViewModel,
     locationViewModel: LocationViewModel
 ) {
     NavHost(
@@ -200,12 +191,10 @@ fun ChargifyNavigationHost(
     ) {
         composable(Screens.EvStations.route) {
             EvStationsScreen(
-                usersViewModel,
-                evStationsViewModel,
-                locationViewModel
+                locationViewModel = locationViewModel
             )
         }
-        composable(Screens.Bookmarks.route) { BookmarksScreen(navHostController, innerPadding) }
+        composable(Screens.Bookmarks.route) { BookmarksScreen() }
         composable(Screens.Chargers.route) { EvChargersScreen(navHostController) }
         composable(Screens.Timeline.route) { TimelineScreen(navHostController) }
     }

@@ -11,6 +11,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aimproxy.chargify.firestore.RatingsAggregation
 import com.aimproxy.chargify.viewmodels.EvStationsViewModel
 import com.google.firebase.firestore.ktx.firestore
@@ -19,7 +20,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun EvStationRateDialog(
-    evStationsViewModel: EvStationsViewModel,
+    evStationsViewModel: EvStationsViewModel = viewModel(),
     openDialog: MutableState<Boolean>
 ) {
     val context = LocalContext.current

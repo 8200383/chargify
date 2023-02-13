@@ -16,15 +16,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.aimproxy.chargify.firestore.BookmarksAggregation.BookmarkedEvStation
 import com.aimproxy.chargify.services.SearchEvStationsNearbyInput
+import com.aimproxy.chargify.viewmodels.BookmarksViewModel
 import com.aimproxy.chargify.viewmodels.EvStationsViewModel
 import com.aimproxy.chargify.viewmodels.LocationViewModel
-import com.aimproxy.chargify.viewmodels.UsersViewModel
 
 @Composable
 fun EvStationsScreenActions(
-    usersViewModel: UsersViewModel,
-    evStationsViewModel: EvStationsViewModel,
+    bookmarksViewModel: BookmarksViewModel = viewModel(),
+    evStationsViewModel: EvStationsViewModel = viewModel(),
     locationViewModel: LocationViewModel,
     onClickStarRate: () -> Unit
 ) {
@@ -92,10 +94,18 @@ fun EvStationsScreenActions(
             }
         }
 
-        currentEvStation.value?.let { station ->
+        currentEvStation.value?.let { evStation ->
             SmallFloatingActionButton(
                 onClick = {
-                    usersViewModel.bookmarkEvStation(station.stationId)
+                    bookmarksViewModel.bookmarkEvStation(
+                        BookmarkedEvStation(
+                            stationId = evStation.stationId.toString(),
+                            operatorInfo = evStation.operatorInfo,
+                            addressInfo = evStation.addressInfo,
+                            latitude = evStation.latitude,
+                            longitude = evStation.longitude
+                        )
+                    )
                 },
             ) {
                 Icon(Icons.Outlined.BookmarkBorder, "Bookmark")

@@ -10,31 +10,28 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aimproxy.chargify.components.EvStationItem
 import com.aimproxy.chargify.components.EvStationRateDialog
 import com.aimproxy.chargify.components.EvStationsScreenActions
 import com.aimproxy.chargify.viewmodels.EvStationsViewModel
 import com.aimproxy.chargify.viewmodels.LocationViewModel
-import com.aimproxy.chargify.viewmodels.UsersViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EvStationsScreen(
-    usersViewModel: UsersViewModel,
-    evStationsViewModel: EvStationsViewModel,
-    locationViewModel: LocationViewModel
+    evStationsViewModel: EvStationsViewModel = viewModel(),
+    locationViewModel: LocationViewModel = viewModel()
 ) {
     val lazyListState = rememberLazyListState()
-    val evStationsList by evStationsViewModel.evStationsList.observeAsState()
+    val evStationsList by evStationsViewModel.evStationsList.observeAsState(listOf())
 
     val openRateDialog = remember { mutableStateOf(false) }
 
     Scaffold(
         floatingActionButton = {
             EvStationsScreenActions(
-                usersViewModel,
-                evStationsViewModel,
-                locationViewModel,
+                locationViewModel = locationViewModel,
                 onClickStarRate = { openRateDialog.value = true }
             )
         },
@@ -46,7 +43,7 @@ fun EvStationsScreen(
             contentPadding = innerPadding,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(evStationsList ?: listOf()) { evStation ->
+            items(evStationsList) { evStation ->
                 EvStationItem(
                     evStationItem = evStation,
                     onClick = { evStationsViewModel.setCurrentSelectedEvStation(it) }
@@ -58,8 +55,7 @@ fun EvStationsScreen(
     when {
         openRateDialog.value -> {
             EvStationRateDialog(
-                evStationsViewModel,
-                openRateDialog
+                openDialog = openRateDialog
             )
         }
     }
