@@ -1,10 +1,12 @@
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.EvStation
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.aimproxy.chargify.firestore.RatingsAggregation
@@ -18,6 +20,7 @@ fun EvStationRateDialog(
     evStationsViewModel: EvStationsViewModel,
     openDialog: MutableState<Boolean>
 ) {
+    val context = LocalContext.current
     val currentEvStation = evStationsViewModel.selectedEvStation.observeAsState()
     var sliderPosition by remember { mutableStateOf(0f) }
 
@@ -64,17 +67,20 @@ fun EvStationRateDialog(
                         openDialog.value = false
                         ratingsService.addRating(it, sliderPosition)
                             .addOnSuccessListener {
-                                Log.d(
-                                    "Rate",
-                                    "DocumentSnapshot successfully written!"
-                                )
+                                Toast.makeText(
+                                    context,
+                                    "Thank you for your opinion!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                Log.d("Rate", "DocumentSnapshot successfully written!")
                             }
                             .addOnFailureListener { e ->
-                                Log.w(
-                                    "Rate",
-                                    "Error writing document",
-                                    e
-                                )
+                                Toast.makeText(
+                                    context,
+                                    "I couldn't register your opinion!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                Log.w("Rate", "Error writing document", e)
                             }
                     }
                 ) {
