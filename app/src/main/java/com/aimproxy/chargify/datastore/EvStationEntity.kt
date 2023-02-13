@@ -6,7 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 
-data class EvStationWithConnectionsList(
+data class EvStationWithConnections(
     @Embedded /* The parent */
     val evStation: EvStationEntity,
 

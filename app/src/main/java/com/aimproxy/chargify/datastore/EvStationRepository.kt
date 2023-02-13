@@ -13,7 +13,7 @@ class EvStationRepository(
         return evStationDAO.addAllConnections(connections)
     }
 
-    fun getAllEvStations(): LiveData<List<EvStationWithConnectionsList>> {
+    fun getAllEvStations(): LiveData<List<EvStationWithConnections>> {
         return evStationDAO.getAllEvStations()
     }
 

@@ -1,16 +1,18 @@
 package com.aimproxy.chargify.components
 
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.EvStation
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aimproxy.chargify.firestore.RatingsAggregation
 import com.aimproxy.chargify.viewmodels.EvStationsViewModel
@@ -18,13 +20,14 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EvStationRateDialog(
     evStationsViewModel: EvStationsViewModel = viewModel(),
     openDialog: MutableState<Boolean>
 ) {
-    val context = LocalContext.current
     val currentEvStation = evStationsViewModel.selectedEvStation.observeAsState()
+    val currentEvStationRating = evStationsViewModel.selectedEvStationRating.observeAsState()
     var sliderPosition by remember { mutableStateOf(0f) }
 
     val ratingsService = RatingsAggregation(Firebase.firestore)
@@ -40,7 +43,42 @@ fun EvStationRateDialog(
             )
         },
         text = {
-            Column {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(vertical = 2.dp),
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                ) {
+                    Badge(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ) {
+                        val badgeNumber =
+                            String.format("%.1f", currentEvStationRating.value?.avgRating)
+                        Text(
+                            text = badgeNumber,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Icon(
+                            Icons.Filled.Star,
+                            contentDescription = null,
+                            modifier = Modifier.size(15.dp)
+                        )
+                    }
+                    Badge(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ) {
+                        val badgeNumber = currentEvStationRating.value?.numRatings
+                        Text(
+                            text = "$badgeNumber Reviews",
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
                 Text(
                     text = "Power up your ride and spread the joy of electric driving by rating your favorite EV charging stations!",
                     fontWeight = FontWeight.SemiBold,
@@ -69,22 +107,6 @@ fun EvStationRateDialog(
                     onClick = {
                         openDialog.value = false
                         ratingsService.addRating(it, sliderPosition)
-                            .addOnSuccessListener {
-                                Toast.makeText(
-                                    context,
-                                    "Thank you for your opinion!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                Log.d("Rate", "DocumentSnapshot successfully written!")
-                            }
-                            .addOnFailureListener { e ->
-                                Toast.makeText(
-                                    context,
-                                    "I couldn't register your opinion!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                Log.w("Rate", "Error writing document", e)
-                            }
                     }
                 ) {
                     Text(text = "Give my rate!", fontWeight = FontWeight.SemiBold)

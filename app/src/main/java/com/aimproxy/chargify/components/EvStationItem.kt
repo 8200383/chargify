@@ -4,9 +4,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,16 +17,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aimproxy.chargify.datastore.EvStationWithConnectionsList
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.aimproxy.chargify.datastore.EvStationWithConnections
+import com.aimproxy.chargify.viewmodels.EvStationsViewModel
+import com.aimproxy.chargify.viewmodels.EvStationsViewModel.*
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EvStationItem(
-    evStationItem: EvStationWithConnectionsList,
+    evStationsViewModel: EvStationsViewModel = viewModel(),
+    evStationItem: EvStationWithConnections,
     isSelected: Boolean = false,
     onClick: (stationId: Int) -> Unit
 ) {
     val dark = isSystemInDarkTheme()
+    val currentEvStationRating = evStationsViewModel.selectedEvStationRating.observeAsState()
 
     ListItem(
         modifier = Modifier.clickable { onClick(evStationItem.evStation.stationId) },
@@ -135,6 +144,63 @@ fun EvStationItem(
                             fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.padding(end = 4.dp)
                         )
+                    }
+                }
+                if (isSelected) {
+                    Row(
+                        modifier = Modifier.padding(vertical = 2.dp),
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    ) {
+                        Badge(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        ) {
+                            val badge = when {
+                                evStationItem.evStation.isOperational -> "Operational"
+                                else -> "Broken"
+                            }
+                            Text(
+                                text = badge,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Icon(
+                                Icons.Filled.Bolt,
+                                contentDescription = null,
+                                modifier = Modifier.size(15.dp)
+                            )
+                        }
+                    }
+                    currentEvStationRating.value?.let {
+                        Row(
+                            modifier = Modifier.padding(vertical = 2.dp),
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),
+                        ) {
+                            Badge(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            ) {
+                                val badgeNumber = String.format("%.1f", it.avgRating)
+                                Text(
+                                    text = badgeNumber,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                                Icon(
+                                    Icons.Filled.Star,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(15.dp)
+                                )
+                            }
+                            Badge(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            ) {
+                                val badgeNumber = it.numRatings
+                                Text(
+                                    text = "$badgeNumber Reviews",
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
+                        }
                     }
                 }
             }

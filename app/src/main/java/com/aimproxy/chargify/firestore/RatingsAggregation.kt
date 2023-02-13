@@ -3,26 +3,25 @@ package com.aimproxy.chargify.firestore
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
 
 class RatingsAggregation(
     private val firestore: FirebaseFirestore = Firebase.firestore
 ) {
-
     data class EvStationRating(
         @DocumentId internal var stationId: Int = 0,
         internal var avgRating: Double = 0.0,
         internal var numRatings: Int = 0
     )
 
-    fun getRatingsByIds(stationIds: List<Int>): Task<QuerySnapshot> {
-        return firestore.collection("ratings")
-            .whereIn("stationId", stationIds.toList())
-            .get()
+    suspend fun getRatingsById(stationId: String): EvStationRating? {
+        return firestore.collection(RATINGS_COLLECTION)
+            .document(stationId)
+            .get().await().toObject()
     }
 
     fun addRating(evStationId: Int, rating: Float): Task<Void> {

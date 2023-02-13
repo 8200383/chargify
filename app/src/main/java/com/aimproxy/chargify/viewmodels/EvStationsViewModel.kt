@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.aimproxy.chargify.datastore.*
+import com.aimproxy.chargify.firestore.RatingsAggregation
+import com.aimproxy.chargify.firestore.RatingsAggregation.EvStationRating
 import com.aimproxy.chargify.services.OpenChargeMapService
 import com.aimproxy.chargify.services.SearchEvStationsNearbyInput
 import kotlinx.coroutines.launch
@@ -14,6 +16,7 @@ class EvStationsViewModel(
     application: Application
 ) : AndroidViewModel(application) {
     private val openChargeMapService = OpenChargeMapService()
+    private val ratingsAggregation = RatingsAggregation()
     private val evStationRepository: EvStationRepository
 
     init {
@@ -22,16 +25,27 @@ class EvStationsViewModel(
         evStationRepository = EvStationRepository(evStationDAO)
     }
 
-    val evStationsList: LiveData<List<EvStationWithConnectionsList>> =
-        evStationRepository.getAllEvStations()
+    val evStationsList: LiveData<List<EvStationWithConnections>>
+        get() = evStationRepository.getAllEvStations()
 
     private val _selectedEvStation = MutableLiveData<EvStationEntity>()
     val selectedEvStation: LiveData<EvStationEntity>
         get() = _selectedEvStation
 
+    private val _selectedEvStationRating = MutableLiveData<EvStationRating>()
+    val selectedEvStationRating: LiveData<EvStationRating>
+        get() = _selectedEvStationRating
+
     fun setCurrentSelectedEvStation(stationId: Int) {
         evStationRepository.getEvStation(stationId).observeForever { evStation ->
             _selectedEvStation.value = evStation
+        }
+    }
+
+    fun fetchEvStationRating(stationId: Int) {
+        viewModelScope.launch {
+            val rating = ratingsAggregation.getRatingsById(stationId.toString())
+            _selectedEvStationRating.value = rating ?: EvStationRating()
         }
     }
 
@@ -84,5 +98,9 @@ class EvStationsViewModel(
                 }
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "EvStationsViewModel"
     }
 }

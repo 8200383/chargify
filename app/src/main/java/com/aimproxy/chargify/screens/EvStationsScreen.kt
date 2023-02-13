@@ -49,7 +49,10 @@ fun EvStationsScreen(
                 EvStationItem(
                     evStationItem = station,
                     isSelected = selected?.equals(station.evStation.stationId) ?: false,
-                    onClick = { evStationsViewModel.setCurrentSelectedEvStation(it) }
+                    onClick = {
+                        evStationsViewModel.fetchEvStationRating(station.evStation.stationId)
+                        evStationsViewModel.setCurrentSelectedEvStation(it)
+                    }
                 )
             }
         }
