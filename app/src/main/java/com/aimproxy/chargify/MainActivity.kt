@@ -196,7 +196,7 @@ fun ChargifyNavigationHost(
         }
         composable(Screens.Bookmarks.route) { BookmarksScreen() }
         composable(Screens.Chargers.route) { EvChargersScreen(navHostController) }
-        composable(Screens.Timeline.route) { TimelineScreen(navHostController) }
+        composable(Screens.Timeline.route) { TimelineScreen() }
     }
 }
 

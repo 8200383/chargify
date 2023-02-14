@@ -4,9 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.NearMe
-import androidx.compose.material.icons.outlined.EvStation
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -37,19 +36,18 @@ fun BookmarkedEvStationItem(
                 Text(it, fontWeight = FontWeight.Bold)
             }
         },
+        leadingContent = {
+            FilledTonalIconButton(onClick = {
+                bookmarksViewModel.bookmarkEvStation(bookmarkedEvStation)
+            }) {
+                Icon(Icons.Outlined.FavoriteBorder, contentDescription = "Saved EvStation")
+            }
+        },
         trailingContent = {
             Row {
-                IconButton(onClick = {
-                    bookmarksViewModel.bookmarkEvStation(bookmarkedEvStation)
-                }) {
-                    Icon(
-                        Icons.Filled.Favorite,
-                        contentDescription = "Saved EvStation",
-                    )
-                }
                 bookmarkedEvStation.latitude?.let { latitude ->
                     bookmarkedEvStation.longitude?.let { longitude ->
-                        FilledTonalIconButton(onClick = {
+                        IconButton(onClick = {
                             maps.apply {
                                 data = Uri.parse("geo:0,0?q=$latitude,$longitude")
                             }
@@ -63,13 +61,6 @@ fun BookmarkedEvStationItem(
                     }
                 }
             }
-
-        },
-        leadingContent = {
-            Icon(
-                Icons.Outlined.EvStation,
-                contentDescription = "Saved EvStation",
-            )
         }
     )
 }

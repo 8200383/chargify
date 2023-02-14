@@ -28,8 +28,10 @@ class BookmarksAggregation(
     private val currentUser = auth.currentUser?.uid ?: ""
 
     val bookmarks: Flow<List<BookmarkedEvStation>> =
-        firestore.collection(USER_COLLECTION).document(currentUser)
-            .collection(BOOKMARKED_EV_STATIONS).snapshots()
+        firestore.collection(USER_COLLECTION)
+            .document(currentUser)
+            .collection(BOOKMARKED_EV_STATIONS)
+            .snapshots()
             .map { snapshot -> snapshot.toObjects() }
 
     suspend fun isBookmarked(stationId: String): Boolean =
@@ -67,6 +69,6 @@ class BookmarksAggregation(
     companion object {
         private const val TAG = "UsersAggregation"
         private const val USER_COLLECTION = "users"
-        private const val BOOKMARKED_EV_STATIONS = "evStations"
+        private const val BOOKMARKED_EV_STATIONS = "bookmarks"
     }
 }

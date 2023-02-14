@@ -18,15 +18,18 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aimproxy.chargify.firestore.BookmarksAggregation.BookmarkedEvStation
+import com.aimproxy.chargify.firestore.TimelinesAggregation.LastKnownEvStation
 import com.aimproxy.chargify.services.SearchEvStationsNearbyInput
 import com.aimproxy.chargify.viewmodels.BookmarksViewModel
 import com.aimproxy.chargify.viewmodels.EvStationsViewModel
 import com.aimproxy.chargify.viewmodels.LocationViewModel
+import com.aimproxy.chargify.viewmodels.TimelineViewModel
 
 @Composable
 fun EvStationsScreenActions(
     bookmarksViewModel: BookmarksViewModel = viewModel(),
     evStationsViewModel: EvStationsViewModel = viewModel(),
+    timelineViewModel: TimelineViewModel = viewModel(),
     locationViewModel: LocationViewModel,
     onClickStarRate: () -> Unit
 ) {
@@ -52,12 +55,19 @@ fun EvStationsScreenActions(
                     onClick = {
                         maps.data = Uri.parse("geo:0,0?q=$latitude,$longitude")
                         ContextCompat.startActivity(context, maps, null)
+                        timelineViewModel.wasHere(
+                            LastKnownEvStation(
+                                stationId = currentEvStation.value?.stationId,
+                                addressInfo = currentEvStation.value?.addressInfo
+                            )
+                        )
                     },
                 ) {
                     Icon(Icons.Outlined.NearMe, "Go")
                 }
             }
         }
+
         currentEvStation.value?.let { evStation ->
             SmallFloatingActionButton(
                 onClick = {
@@ -75,6 +85,7 @@ fun EvStationsScreenActions(
                 Icon(Icons.Outlined.Share, "Share")
             }
         }
+
         currentEvStation.value?.phonePrimaryContact?.let { phone ->
             SmallFloatingActionButton(
                 onClick = {

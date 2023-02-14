@@ -2,7 +2,7 @@ package com.aimproxy.chargify.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.EvStation
+import androidx.compose.material.icons.outlined.Timeline
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun BookmarksEmptyState(
+fun TimelineEmptyState(
 ) {
     Column(
         modifier = Modifier
@@ -26,15 +26,15 @@ fun BookmarksEmptyState(
         verticalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterVertically)
     ) {
         FilledTonalIconButton(onClick = { }) {
-            Icon(Icons.Outlined.EvStation, contentDescription = null)
+            Icon(Icons.Outlined.Timeline, contentDescription = null)
         }
         Text(
-            text = "There is no saved EvStations yet!",
+            text = "There is no visited EvStations yet!",
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
         Text(
-            text = "Start by save an EvStation.",
+            text = "Previous navigated EvStations will appear here.",
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center
