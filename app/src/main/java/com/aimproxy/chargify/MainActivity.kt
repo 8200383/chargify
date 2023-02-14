@@ -2,7 +2,7 @@ package com.aimproxy.chargify
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.app.*
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
