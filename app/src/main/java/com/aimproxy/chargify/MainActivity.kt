@@ -34,7 +34,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.aimproxy.chargify.designsystem.ChargifyTheme
 import com.aimproxy.chargify.screens.BookmarksScreen
-import com.aimproxy.chargify.screens.EvChargersScreen
 import com.aimproxy.chargify.screens.EvStationsScreen
 import com.aimproxy.chargify.screens.TimelineScreen
 import com.aimproxy.chargify.viewmodels.LocationViewModel
@@ -161,13 +160,10 @@ fun ChargifyTopBar(
 
     TopAppBar(
         title = {
-            Text(
-                text = topBarLabel ?: "Chargify",
-                fontWeight = FontWeight.ExtraBold
-            )
+            Text(text = topBarLabel ?: "Chargify", fontWeight = FontWeight.ExtraBold)
         },
         actions = {
-            IconButton(onClick = {
+            FilledTonalIconButton(onClick = {
                 firebaseAuth.signOut()
                 startActivity(context, intent, null)
                 activity?.finish()
@@ -189,13 +185,12 @@ fun ChargifyNavigationHost(
         startDestination = Screens.EvStations.route,
         modifier = Modifier.padding(innerPadding)
     ) {
+        composable(Screens.Bookmarks.route) { BookmarksScreen() }
         composable(Screens.EvStations.route) {
             EvStationsScreen(
                 locationViewModel = locationViewModel
             )
         }
-        composable(Screens.Bookmarks.route) { BookmarksScreen() }
-        composable(Screens.Chargers.route) { EvChargersScreen(navHostController) }
         composable(Screens.Timeline.route) { TimelineScreen() }
     }
 }
@@ -243,8 +238,7 @@ enum class Screens(
     val navigationLabel: String,
     val topBarLabel: String
 ) {
-    EvStations("ev_stations", Icons.Outlined.EvStation, "Ev Stations", "Ev Stations Nearby"),
     Bookmarks("bookmarks", Icons.Outlined.BookmarkBorder, "Bookmarks", "Saved Stations"),
-    Chargers("chargers", Icons.Outlined.Power, "Chargers", "Compatible Chargers"),
+    EvStations("ev_stations", Icons.Outlined.EvStation, "Ev Stations", "Ev Stations Nearby"),
     Timeline("timeline", Icons.Outlined.Timeline, "Timeline", "Timeline"),
 }

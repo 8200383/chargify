@@ -2,12 +2,15 @@ package com.aimproxy.chargify.components
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.NearMe
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.content.ContextCompat
@@ -15,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aimproxy.chargify.firestore.BookmarksAggregation.*
 import com.aimproxy.chargify.viewmodels.BookmarksViewModel
 
+@RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookmarkedEvStationItem(
@@ -44,17 +48,19 @@ fun BookmarkedEvStationItem(
             }
         },
         trailingContent = {
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 bookmarkedEvStation.latitude?.let { latitude ->
                     bookmarkedEvStation.longitude?.let { longitude ->
-                        IconButton(onClick = {
+                        FilledTonalIconButton(onClick = {
                             maps.apply {
                                 data = Uri.parse("geo:0,0?q=$latitude,$longitude")
                             }
                             ContextCompat.startActivity(context, maps, null)
                         }) {
                             Icon(
-                                Icons.Filled.NearMe,
+                                Icons.Outlined.NearMe,
                                 contentDescription = "Go to",
                             )
                         }
