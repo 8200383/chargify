@@ -2,8 +2,6 @@ package com.aimproxy.chargify.components
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -18,7 +16,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.aimproxy.chargify.firestore.BookmarksAggregation.*
 import com.aimproxy.chargify.viewmodels.BookmarksViewModel
 
-@RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookmarkedEvStationItem(

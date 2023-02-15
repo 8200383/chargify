@@ -1,8 +1,10 @@
 package com.aimproxy.chargify
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.annotation.SuppressLint
 import android.app.*
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -24,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -53,6 +57,15 @@ class MainActivity : ComponentActivity() {
     private val locationViewModel: LocationViewModel by viewModels()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var listeningToUpdates = false
+
+    companion object {
+        const val APP_NAME = "Chargify"
+        const val CHANNEL_NAME = "Chargify Channel"
+        const val CHANNEL_ID = "chargify_channel"
+        const val NOTIFICATION_ID = 12345
+        const val REQUEST_CODE_LOCATION = 0
+        const val REQUEST_CODE_NOTIFICATION = 1
+    }
 
     private val locationCallback: LocationCallback = object : LocationCallback() {
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -96,19 +109,47 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onStart() {
         super.onStart()
         if (checkSelfPermission(ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(ACCESS_FINE_LOCATION), 0)
+            requestPermissions(arrayOf(ACCESS_FINE_LOCATION), REQUEST_CODE_LOCATION)
         }
+        if (checkSelfPermission(POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(POST_NOTIFICATIONS), REQUEST_CODE_NOTIFICATION)
+        }
+        createNotificationChannel()
     }
 
+    @SuppressLint("MissingPermission")
     override fun onStop() {
         super.onStop()
         if (listeningToUpdates) {
             fusedLocationClient.removeLocationUpdates(locationCallback)
         }
+
+        // Notification Alert
+        val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(APP_NAME)
+            .setContentText("Thank you for using Chargify!")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setOngoing(true)
+            .setAutoCancel(true)
+
+        with(NotificationManagerCompat.from(applicationContext)) {
+            notify(NOTIFICATION_ID, builder.build())
+        }
     }
+
+    private fun createNotificationChannel() {
+        val channel =
+            NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT)
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+
 
     @SuppressLint("MissingPermission")
     private fun startUpdatingLocation() {

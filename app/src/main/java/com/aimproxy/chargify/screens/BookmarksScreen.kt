@@ -1,5 +1,7 @@
 package com.aimproxy.chargify.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +17,7 @@ import com.aimproxy.chargify.components.BookmarkedEvStationItem
 import com.aimproxy.chargify.components.BookmarksEmptyState
 import com.aimproxy.chargify.viewmodels.BookmarksViewModel
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun BookmarksScreen(
     bookmarksViewModel: BookmarksViewModel = viewModel(),
